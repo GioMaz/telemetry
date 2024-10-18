@@ -3,11 +3,13 @@
 #include "../common.h"
 #include "../state.h"
 
-static void role_combo(char *combo_name, const UserRole *role)
+static void role_combo(char *name, const UserRole *role, bool disabled=false)
 {
     size_t roles_size;
     const char **roles = role_map(&roles_size);
-    ImGui::Combo(combo_name, (int *)role, roles, roles_size);
+    if (disabled) ImGui::BeginDisabled();
+    ImGui::Combo(name, (int *)role, roles, roles_size);
+    if (disabled) ImGui::EndDisabled();
 }
 
 void render_settings(State *state)
@@ -43,7 +45,7 @@ void render_settings(State *state)
                 ImGui::TableSetColumnIndex(1);
                 memset(buf, 0, BUF_SIZE);
                 sprintf(buf, "##%d", row);
-                role_combo(buf, &users[row]->role);
+                role_combo(buf, &users[row]->role, users[row] == state->user);
 
                 ImGui::TableSetColumnIndex(2);
                 memset(buf, 0, BUF_SIZE);
