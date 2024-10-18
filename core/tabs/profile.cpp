@@ -24,17 +24,21 @@ void render_new_email(State *state)
     ImGui::InputText("new email", buf_email, BUF_SIZE);
     if (ImGui::Button("Apply##email")) {
         if (buf_email[0]) {
-            state->user_change_email(std::string(buf_email));
-            message = 1;
+            if (state->user_change_email(std::string(buf_email))) {
+                message = 1;
+            } else {
+                message = 2;
+            }
         } else {
-            message = 2;
+            message = 3;
         }
     }
 
     switch (message) {
     case 0: break;
     case 1: ImGui::Text("Email updated correctly"); break;
-    case 2: ImGui::Text("Email cannot be empty"); break;
+    case 2: ImGui::Text("Email already taken"); break;
+    case 3: ImGui::Text("Email cannot be empty"); break;
     }
 }
 

@@ -30,9 +30,9 @@ static void render_login(State *state)
     if (ImGui::Button("Login")) {
         state->user_login(std::string(buf_email), std::string(buf_password));
 
-        // TODO: remove this
-        state->logged_in = true;
-        state->user = &state->users["a@gmail.com"];
+        /*// TODO: remove this*/
+        /*state->logged_in = true;*/
+        /*state->user = &state->users["a@gmail.com"];*/
     }
 }
 

@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "state.h"
 #include "user.h"
 
@@ -60,12 +62,23 @@ void State::user_logout()
 
 bool State::user_change_email(std::string email)
 {
-    auto it = this->users.find(email);
-    if (it != this->users.end()) {
+    auto itnew = this->users.find(email);
+    if (itnew != this->users.end()) {
         return false;
     }
 
+    // Copy old bucket (*this->user) to new bucket (this->users[email])
+    this->users[email] = *this->user;
+
+    // Delete old bucket
+    this->users.erase(this->user->email);
+
+    // Set global user to new bucket
+    this->user = &this->users[email];
+
+    // Set global user email to new email
     this->user->email = email;
+
     return true;
 }
 
