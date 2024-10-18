@@ -46,7 +46,7 @@ static bool render_path(
     if (xs.size() != ys.size())
         return false;
 
-    if (ImPlot::BeginPlot("Position")) {
+    if (ImPlot::BeginPlot("Position", ImVec2(-1, 0), ImPlotFlags_Equal)) {
         const static auto color = IM_COL32(66, 135, 245, 255);
         ImPlot::SetupAxes("x", "y");
         ImPlot::PushStyleColor(ImPlotCol_Line, color);
