@@ -4,7 +4,6 @@ Recruiting project for the e-agle telemetry team.
 
 ### Prerequisites
 
-- `git` and a [GitHub](https://github.com) account
 - C/C++ toolchain, with CMake
 - OpenGL
 - GLEW
