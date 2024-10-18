@@ -50,7 +50,7 @@ char Parser::read_cell(char buf[BUF_SIZE])
     return c;
 }
 
-char Parser::read_row(bool are_rows = true)
+char Parser::read_row(bool are_rows)
 {
     std::vector<std::string> row;
 

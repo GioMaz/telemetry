@@ -17,7 +17,7 @@ struct Parser {
 
     // Return the last character read
     char read_cell(char buf[BUF_SIZE]);
-    char read_row(bool are_items);
+    char read_row(bool are_items = true);
 
     void read_all();
 

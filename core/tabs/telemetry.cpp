@@ -32,7 +32,8 @@ static bool render_comparison(
 }
 
 static bool render_path(
-        std::unordered_map<std::string, std::vector<double>> &lines)
+        std::unordered_map<std::string, std::vector<double>> &lines,
+        bool tooltip = true)
 {
     auto itx = lines.find("x");
     auto ity = lines.find("y");
@@ -46,16 +47,18 @@ static bool render_path(
         return false;
 
     if (ImPlot::BeginPlot("Position")) {
+        const static auto color = IM_COL32(66, 135, 245, 255);
         ImPlot::SetupAxes("x", "y");
+        ImPlot::PushStyleColor(ImPlotCol_Line, color);
         ImPlot::PlotLine("Postion",
                 xs.data(),
                 ys.data(),
                 ys.size());
 
-        if (ImPlot::IsPlotHovered()) {
+        if (ImPlot::IsPlotHovered() && tooltip) {
 
             // Calculate cursor's closest point
-            auto point = ImPlot::GetPlotMousePos();
+            auto point  = ImPlot::GetPlotMousePos();
             double x    = point.x;
             double y    = point.y;
             int mini    = -1;
@@ -69,6 +72,10 @@ static bool render_path(
                     mini = i;
                 }
             }
+
+            // Draw circle
+            auto center = ImPlot::PlotToPixels(ImPlotPoint(xs[mini], ys[mini]));
+            ImPlot::GetPlotDrawList()->AddCircleFilled(center, 5, color, 20);
 
             // Draw tooltip
             if (mini > 0 && ImGui::BeginItemTooltip())
@@ -86,6 +93,7 @@ static bool render_path(
             }
         }
 
+        ImPlot::PopStyleColor();
         ImPlot::EndPlot();
     }
 }
@@ -100,7 +108,6 @@ void render_telemetry(State *state)
     if (ImGui::BeginTabItem("Telemetry")) {
 
         if (state->previous_tab != Telemetry) {
-            std::cout << "SETTO A TELEMETRY\n";
             state->previous_tab = Telemetry;
             show_plots = false;
             strcpy(buf_path, "../csv_samples/skidpad.csv");
@@ -109,6 +116,7 @@ void render_telemetry(State *state)
         ImGui::InputText("filepath", buf_path, BUF_SIZE);
 
         if (ImGui::Button("Load CSV")) {
+            // Open file
             if (!parser.open(buf_path)) {
                 std::cerr << "Failed to open file " << buf_path << "\n";
                 return;

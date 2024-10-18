@@ -31,8 +31,8 @@ static void render_login(State *state)
         state->user_login(std::string(buf_email), std::string(buf_password));
 
         // TODO: remove this
-        // state->logged_in = true;
-        // state->user = &state->users["a@gmail.com"];
+        state->logged_in = true;
+        state->user = &state->users["a@gmail.com"];
     }
 }
 
@@ -107,7 +107,7 @@ void app_render(State *state)
         | ImGuiWindowFlags_NoCollapse
         | ImGuiWindowFlags_NoBackground;
 
-    ImGui::Begin("Test0", NULL, flags);
+    ImGui::Begin("App", NULL, flags);
     ImGui::SetWindowSize(ImGui::GetMainViewport()->Size);
     ImGui::SetWindowPos(ImGui::GetMainViewport()->Pos);
 

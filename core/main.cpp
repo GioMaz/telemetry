@@ -24,10 +24,7 @@ void sig_handler(int sig_number) {
 }
 
 int main() {
-    // Initialize the app state
-    State state;
-
-    std::cout << "--- Project 1 ---\n" << std::endl;
+    std::cout << "--- Telemetry ---\n" << std::endl;
 
     signal(SIGINT, sig_handler);
     signal(SIGTERM, sig_handler);
@@ -38,6 +35,9 @@ int main() {
     ImGuiIO &io = ImGui::GetIO();
     ImVec4 clear_color = ImVec4(0.06f, 0.06f, 0.06f, 0.94f);
     std::cout << "Done" << std::endl;
+
+    // Initialize the app state
+    State state;
 
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();

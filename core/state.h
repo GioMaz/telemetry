@@ -6,15 +6,14 @@
 #include "common.h"
 
 enum Tab {
-    None,
-    App,
-    Profile,
-    Settings,
-    Telemetry,
+    None        = 0,
+    App         = 1,
+    Profile     = 2,
+    Settings    = 3,
+    Telemetry   = 4,
 };
 
 struct State {
-    // Global
     std::unordered_map<std::string, User> users;
     User *user      = NULL;
     bool logged_in  = false;
@@ -29,14 +28,4 @@ struct State {
     void user_logout();
     bool user_change_email(std::string email);
     void user_change_password(std::string password);
-
-    /*// Settings tab*/
-    /*char settings_buf_email[BUF_SIZE];*/
-    /*char settings_buf_password[BUF_SIZE];*/
-    /*UserRole settings_role;*/
-    /**/
-    /*// Profile tab*/
-    /*char profile_buf_email[BUF_SIZE];*/
-    /*char profile_buf_password1[BUF_SIZE];*/
-    /*char profile_buf_password2[BUF_SIZE];*/
 };
