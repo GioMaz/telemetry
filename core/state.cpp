@@ -86,3 +86,8 @@ void State::user_change_password(std::string password)
 {
     this->user->password = password;
 }
+
+bool State::user_is_admin()
+{
+    return this->user->role == Admin;
+}

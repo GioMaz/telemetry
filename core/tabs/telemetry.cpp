@@ -8,7 +8,7 @@
 #include "../state.h"
 #include "../user.h"
 
-static bool render_comparison(
+static bool render_values(
         std::unordered_map<std::string, std::vector<double>> &lines)
 {
     auto it = lines.find("time");
@@ -130,10 +130,13 @@ void render_telemetry(State *state)
         }
 
         if (show_plots) {
-            // Show various statistics comparison
-            render_comparison(map);
+            // Show all the csv values based on time
+            if (state->show_values || state->user_is_admin())
+                render_values(map);
+
             // Show driver path
-            render_path(map);
+            if (state->show_path || state->user_is_admin())
+                render_path(map);
         }
 
         ImGui::EndTabItem();

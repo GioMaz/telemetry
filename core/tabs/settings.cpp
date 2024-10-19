@@ -10,80 +10,98 @@ static void role_combo(char *name, const UserRole *role)
     ImGui::Combo(name, (int *)role, roles, roles_size);
 }
 
+static void render_all_users(State *state)
+{
+    ImGui::SeparatorText("ALL USERS");
+
+    std::vector<const User *> users;
+    for (const auto &pair : state->users)
+        users.push_back(&pair.second);
+
+    static ImGuiTableFlags flags = ImGuiTableFlags_SizingStretchSame
+        | ImGuiTableFlags_Resizable
+        | ImGuiTableFlags_BordersOuter
+        | ImGuiTableFlags_BordersV
+        | ImGuiTableFlags_ContextMenuInBody;
+
+    if (ImGui::BeginTable("Users", 3, flags))
+    {
+        ImGui::TableSetupColumn("Email", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("Role", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("Remove", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableHeadersRow();
+
+        char buf[BUF_SIZE];
+        for (int row = 0; row < users.size(); row++)
+        {
+            ImGui::TableNextRow();
+
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("%s", users[row]->email.data());
+
+            bool disabled = state->user->eq(users[row]);
+            if (disabled) ImGui::BeginDisabled();
+
+            ImGui::TableSetColumnIndex(1);
+            memset(buf, 0, BUF_SIZE);
+            sprintf(buf, "##%d", row);
+            role_combo(buf, &users[row]->role);
+
+            ImGui::TableSetColumnIndex(2);
+            memset(buf, 0, BUF_SIZE);
+            sprintf(buf, "Remove##%d", row);
+            if (ImGui::Button(buf)) {
+                state->user_unregister(users[row]);
+            }
+
+            if (disabled) ImGui::EndDisabled();
+        }
+
+        ImGui::EndTable();
+    }
+}
+
+void render_new_user(State *state)
+{
+    ImGui::SeparatorText("NEW USER");
+
+    static char buf_email[BUF_SIZE];
+    static char buf_password[BUF_SIZE];
+    static UserRole role;
+    if (state->previous_tab != Settings) {
+        state->previous_tab = Settings;
+        memset(buf_email, 0, BUF_SIZE);
+        memset(buf_password, 0, BUF_SIZE);
+        role = Admin;
+    }
+
+    ImGui::InputText("email", buf_email, BUF_SIZE);
+    ImGui::InputText("password", buf_password, BUF_SIZE, ImGuiInputTextFlags_Password);
+    role_combo("Role", &role);
+
+    if (ImGui::Button("Create")) {
+        auto user = User(
+                std::string(buf_email),
+                std::string(buf_password),
+                role);
+        state->user_register(user);
+    }
+}
+
+void render_show_plots(State *state)
+{
+    ImGui::SeparatorText("SHOW PLOTS");
+
+    ImGui::Checkbox("Show values plot", &state->show_values);
+    ImGui::Checkbox("Show path plot", &state->show_path);
+}
+
 void render_settings(State *state)
 {
     if (ImGui::BeginTabItem("Settings")) {
-        ImGui::SeparatorText("ALL USERS");
-
-        std::vector<const User *> users;
-        for (const auto &pair : state->users)
-            users.push_back(&pair.second);
-
-        static ImGuiTableFlags flags = ImGuiTableFlags_SizingStretchSame
-            | ImGuiTableFlags_Resizable
-            | ImGuiTableFlags_BordersOuter
-            | ImGuiTableFlags_BordersV
-            | ImGuiTableFlags_ContextMenuInBody;
-
-        if (ImGui::BeginTable("Users", 3, flags))
-        {
-            ImGui::TableSetupColumn("Email", ImGuiTableColumnFlags_WidthStretch);
-            ImGui::TableSetupColumn("Role", ImGuiTableColumnFlags_WidthStretch);
-            ImGui::TableSetupColumn("Remove", ImGuiTableColumnFlags_WidthStretch);
-            ImGui::TableHeadersRow();
-
-            char buf[BUF_SIZE];
-            for (int row = 0; row < users.size(); row++)
-            {
-                ImGui::TableNextRow();
-
-                ImGui::TableSetColumnIndex(0);
-                ImGui::Text("%s", users[row]->email.data());
-
-                bool disabled = state->user->eq(users[row]);
-                if (disabled) ImGui::BeginDisabled();
-
-                    ImGui::TableSetColumnIndex(1);
-                    memset(buf, 0, BUF_SIZE);
-                    sprintf(buf, "##%d", row);
-                    role_combo(buf, &users[row]->role);
-
-                    ImGui::TableSetColumnIndex(2);
-                    memset(buf, 0, BUF_SIZE);
-                    sprintf(buf, "Remove##%d", row);
-                    if (ImGui::Button(buf)) {
-                        state->user_unregister(users[row]);
-                    }
-
-                if (disabled) ImGui::EndDisabled();
-            }
-
-            ImGui::EndTable();
-        }
-
-        ImGui::SeparatorText("NEW USER");
-
-        static char buf_email[BUF_SIZE];
-        static char buf_password[BUF_SIZE];
-        static UserRole role;
-        if (state->previous_tab != Settings) {
-            state->previous_tab = Settings;
-            memset(buf_email, 0, BUF_SIZE);
-            memset(buf_password, 0, BUF_SIZE);
-            role = Admin;
-        }
-
-        ImGui::InputText("email", buf_email, BUF_SIZE);
-        ImGui::InputText("password", buf_password, BUF_SIZE, ImGuiInputTextFlags_Password);
-        role_combo("Role", &role);
-
-        if (ImGui::Button("Create")) {
-            auto user = User(
-                    std::string(buf_email),
-                    std::string(buf_password),
-                    role);
-            state->user_register(user);
-        }
+        render_all_users(state);
+        render_new_user(state);
+        render_show_plots(state);
         ImGui::EndTabItem();
     }
 }

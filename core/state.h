@@ -20,6 +20,9 @@ struct State {
 
     Tab previous_tab = None;
 
+    bool show_values    = true;
+    bool show_path      = true;
+
     State();
     void populate_users();
     bool user_register(User user);
@@ -28,4 +31,5 @@ struct State {
     void user_logout();
     bool user_change_email(std::string email);
     void user_change_password(std::string password);
+    bool user_is_admin();
 };
