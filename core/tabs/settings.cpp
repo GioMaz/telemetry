@@ -3,13 +3,11 @@
 #include "../common.h"
 #include "../state.h"
 
-static void role_combo(char *name, const UserRole *role, bool disabled=false)
+static void role_combo(char *name, const UserRole *role)
 {
     size_t roles_size;
     const char **roles = role_map(&roles_size);
-    if (disabled) ImGui::BeginDisabled();
     ImGui::Combo(name, (int *)role, roles, roles_size);
-    if (disabled) ImGui::EndDisabled();
 }
 
 void render_settings(State *state)
@@ -42,19 +40,22 @@ void render_settings(State *state)
                 ImGui::TableSetColumnIndex(0);
                 ImGui::Text("%s", users[row]->email.data());
 
-                ImGui::TableSetColumnIndex(1);
-                memset(buf, 0, BUF_SIZE);
-                sprintf(buf, "##%d", row);
-                role_combo(buf, &users[row]->role, users[row] == state->user);
+                bool disabled = state->user->eq(users[row]);
+                if (disabled) ImGui::BeginDisabled();
 
-                ImGui::TableSetColumnIndex(2);
-                memset(buf, 0, BUF_SIZE);
-                sprintf(buf, "Remove##%d", row);
-                if (ImGui::Button(buf)) {
-                    if (!state->user->eq(users[row])) {
+                    ImGui::TableSetColumnIndex(1);
+                    memset(buf, 0, BUF_SIZE);
+                    sprintf(buf, "##%d", row);
+                    role_combo(buf, &users[row]->role);
+
+                    ImGui::TableSetColumnIndex(2);
+                    memset(buf, 0, BUF_SIZE);
+                    sprintf(buf, "Remove##%d", row);
+                    if (ImGui::Button(buf)) {
                         state->user_unregister(users[row]);
                     }
-                }
+
+                if (disabled) ImGui::EndDisabled();
             }
 
             ImGui::EndTable();

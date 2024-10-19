@@ -57,8 +57,9 @@ void render_new_password(State *state)
 
     ImGui::SeparatorText("NEW PASSWORD");
 
-    ImGui::InputText("new password", buf_password1, BUF_SIZE);
-    ImGui::InputText("repeat new password", buf_password2, BUF_SIZE);
+
+    ImGui::InputText("new password", buf_password1, BUF_SIZE, ImGuiInputTextFlags_Password);
+    ImGui::InputText("repeat new password", buf_password2, BUF_SIZE, ImGuiInputTextFlags_Password);
     if (ImGui::Button("Apply##password")) {
         if (!buf_password1[0] && !buf_password2[0]) {
             message = 1;
