@@ -70,6 +70,8 @@ static bool render_values(
 
         ImPlot::EndPlot();
     }
+
+    return true;
 }
 
 static bool render_path(
@@ -164,6 +166,8 @@ static bool render_distance(
 
         ImPlot::EndPlot();
     }
+
+    return true;
 }
 
 void render_telemetry(State *state)
