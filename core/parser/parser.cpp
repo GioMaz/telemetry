@@ -80,9 +80,9 @@ void Parser::read_all()
     while (read_row() != EOF);
 }
 
-std::unordered_map<std::string, std::vector<double>> Parser::to_mapd()
+std::map<std::string, std::vector<double>> Parser::to_mapd()
 {
-    std::unordered_map<std::string, std::vector<double>> map;
+    std::map<std::string, std::vector<double>> map;
     for (const auto &row : this->rows) {
         for (int i = 0; i < row.size(); i++) {
             double d;
@@ -93,9 +93,9 @@ std::unordered_map<std::string, std::vector<double>> Parser::to_mapd()
     return map;
 }
 
-std::unordered_map<std::string, std::vector<std::string>> Parser::to_maps()
+std::map<std::string, std::vector<std::string>> Parser::to_maps()
 {
-    std::unordered_map<std::string, std::vector<std::string>> map;
+    std::map<std::string, std::vector<std::string>> map;
     for (const auto &row : this->rows) {
         for (int i = 0; i < row.size(); i++) {
             map[this->column_names[i]].push_back(row[i]);

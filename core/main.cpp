@@ -70,7 +70,7 @@ GLFWwindow *open_window() {
         return nullptr;
     int x, y, w, h;
     glfwGetMonitorWorkarea(glfwGetPrimaryMonitor(), &x, &y, &w, &h);
-    GLFWwindow *window = glfwCreateWindow(w, h, "Project 1", NULL, NULL);
+    GLFWwindow *window = glfwCreateWindow(w, h, "Telemetry", NULL, NULL);
     if (window == NULL)
         return nullptr;
 

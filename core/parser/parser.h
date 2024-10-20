@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <map>
 
 #include "../common.h"
 
@@ -22,6 +23,6 @@ struct Parser {
     void read_all();
 
     // Return (column_name, column_items) pairs
-    std::unordered_map<std::string, std::vector<double>> to_mapd();
-    std::unordered_map<std::string, std::vector<std::string>> to_maps();
+    std::map<std::string, std::vector<double>> to_mapd();
+    std::map<std::string, std::vector<std::string>> to_maps();
 };

@@ -31,8 +31,8 @@ static void render_login(State *state)
         state->user_login(std::string(buf_email), std::string(buf_password));
 
         /*// TODO: remove this*/
-        /*state->logged_in = true;*/
-        /*state->user = &state->users["a@gmail.com"];*/
+        state->logged_in = true;
+        state->user = &state->users["a@gmail.com"];
     }
 }
 
@@ -108,8 +108,9 @@ void app_render(State *state)
         | ImGuiWindowFlags_NoBackground;
 
     ImGui::Begin("App", NULL, flags);
-    ImGui::SetWindowSize(ImGui::GetMainViewport()->Size);
-    ImGui::SetWindowPos(ImGui::GetMainViewport()->Pos);
+    auto viewport = ImGui::GetMainViewport();
+    ImGui::SetWindowSize(viewport->Size);
+    ImGui::SetWindowPos(viewport->Pos);
 
     if (state->logged_in)
         render_tabs(state);

@@ -14,14 +14,18 @@ enum Tab {
 };
 
 struct State {
+    // Users
     std::unordered_map<std::string, User> users;
     User *user      = NULL;
     bool logged_in  = false;
 
+    // Tabs
     Tab previous_tab = None;
 
+    // Telemetry
     bool show_values    = true;
     bool show_path      = true;
+    bool show_space     = true;
 
     State();
     void populate_users();
