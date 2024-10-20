@@ -26,3 +26,12 @@ make -j$(nproc)
 ```
 
 This will build the executable that will be located in `./bin` directory.
+
+### Usage
+
+When first starting the application there are 2 users registered in the system
+
+| email       | pasword | role   |
+|-------------|---------|--------|
+| a@gmail.com | a       | Admin  |
+| v@gmail.com | v       | Viewer |
