@@ -25,7 +25,7 @@ struct State {
     // Telemetry
     bool show_values    = true;
     bool show_path      = true;
-    bool show_space     = true;
+    bool show_distance  = true;
 
     State();
     void populate_users();

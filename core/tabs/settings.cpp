@@ -94,6 +94,7 @@ void render_show_plots(State *state)
 
     ImGui::Checkbox("Show values plot", &state->show_values);
     ImGui::Checkbox("Show path plot", &state->show_path);
+    ImGui::Checkbox("Show distance plot", &state->show_distance);
 }
 
 void render_settings(State *state)

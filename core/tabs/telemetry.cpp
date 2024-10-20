@@ -22,6 +22,30 @@ static int binary_search(double *a, int i, int j, double val)
     }
 }
 
+static void render_line_tooltip(
+        std::map<std::string, std::vector<double>> &lines,
+        std::vector<double> &time)
+{
+    // Draw line
+    double x = ImPlot::GetPlotMousePos().x;
+    double half_width = (time[1] - time[0]) / 2;
+    double l = ImPlot::PlotToPixels(x - half_width * 1.5, 0).x;
+    double r = ImPlot::PlotToPixels(x + half_width * 1.5, 0).x;
+    double t = ImPlot::GetPlotPos().y;
+    double b = t + ImPlot::GetPlotSize().y;
+    auto color = IM_COL32(128,128,128,128);
+    ImPlot::GetPlotDrawList()->AddLine(ImVec2(l, t), ImVec2(r, b), color);
+
+    // Draw tooltip
+    if (x >= 0 && x < time.size() && ImGui::BeginItemTooltip()) {
+        int xi = binary_search(time.data(), 0, time.size(), x);
+        for (auto &line : lines) {
+            ImGui::Text("%s: %lf", line.first.data(), line.second[xi]);
+        }
+        ImGui::EndTooltip();
+    }
+}
+
 static bool render_values(
         std::map<std::string, std::vector<double>> &lines)
 {
@@ -43,27 +67,7 @@ static bool render_values(
         }
 
         if (ImPlot::IsPlotHovered()) {
-
-            // Draw line
-            auto point  = ImPlot::GetPlotMousePos();
-            double x    = point.x;
-            double y    = point.y;
-            double half_width = (time[1] - time[0]) / 2;
-            double l = ImPlot::PlotToPixels(x - half_width * 1.5, 0).x;
-            double r = ImPlot::PlotToPixels(x + half_width * 1.5, 0).x;
-            double t = ImPlot::GetPlotPos().y;
-            double b = t + ImPlot::GetPlotSize().y;
-            auto color    = IM_COL32(128,128,128,128);
-            ImPlot::GetPlotDrawList()->AddLine(ImVec2(l, t), ImVec2(r, b), color);
-
-            // Draw tooltip
-            if (x >= 0 && x < time.size() && ImGui::BeginItemTooltip()) {
-                int xi = binary_search(time.data(), 0, time.size(), x);
-                for (auto &line : lines) {
-                    ImGui::Text("%s: %lf", line.first.data(), line.second[xi]);
-                }
-                ImGui::EndTooltip();
-            }
+            render_line_tooltip(lines, time);
         }
 
         ImPlot::EndPlot();
@@ -94,7 +98,7 @@ static bool render_path(
                 ys.data(),
                 ys.size());
 
-        if (ImPlot::IsPlotHovered() && tooltip) {
+        if (tooltip && ImPlot::IsPlotHovered()) {
 
             // Calculate cursor's closest point
             auto point  = ImPlot::GetPlotMousePos();
@@ -133,7 +137,7 @@ static bool render_path(
     return true;
 }
 
-static bool render_space(
+static bool render_distance(
         std::map<std::string, std::vector<double>> &lines)
 {
     auto itt = lines.find("time");
@@ -149,13 +153,17 @@ static bool render_space(
         space[i] = space[i-1] + speed[i];
     }
 
-    if (ImPlot::BeginPlot("Space")) {
+    if (ImPlot::BeginPlot("Distance")) {
         ImPlot::SetupAxes("Time", "Space");
 
-        ImPlot::PlotLine("Space",
+        ImPlot::PlotLine("Distance",
                 time.data(),
                 space.data(),
                 space.size());
+
+        if (ImPlot::IsPlotHovered()) {
+            render_line_tooltip(lines, time);
+        }
 
         ImPlot::EndPlot();
     }
@@ -163,7 +171,8 @@ static bool render_space(
 
 void render_telemetry(State *state)
 {
-    static bool show_plots = false;
+    static bool show_plots  = false;
+    static bool tooltip     = true;
     static char buf_path[BUF_SIZE];
     static Parser parser;
     static std::map<std::string, std::vector<double>> map;
@@ -173,7 +182,8 @@ void render_telemetry(State *state)
         if (state->previous_tab != Telemetry) {
             state->previous_tab = Telemetry;
             show_plots  = false;
-            strcpy(buf_path, "../csv_samples/skidpad.csv");
+            tooltip     = true;
+            strcpy(buf_path, "../csv_samples/acceleration.csv");
         }
 
         ImGui::InputText("filepath", buf_path, BUF_SIZE);
@@ -198,12 +208,14 @@ void render_telemetry(State *state)
                 render_values(map);
 
             // Show driver path
-            if (state->show_path || state->user_is_admin())
-                render_path(map);
+            if (state->show_path || state->user_is_admin()) {
+                ImGui::Checkbox("Show tooltip", &tooltip);
+                render_path(map, tooltip);
+            }
 
-            // Show space travelled
-            if (state->show_space || state->user_is_admin())
-                render_space(map);
+            // Show distance travelled
+            if (state->show_distance || state->user_is_admin())
+                render_distance(map);
         }
 
         ImGui::EndTabItem();
