@@ -18,7 +18,7 @@ static void render_all_users(State *state)
     for (const auto &pair : state->users)
         users.push_back(&pair.second);
 
-    static ImGuiTableFlags flags = ImGuiTableFlags_SizingStretchSame
+    static const ImGuiTableFlags flags = ImGuiTableFlags_SizingStretchSame
         | ImGuiTableFlags_Resizable
         | ImGuiTableFlags_BordersOuter
         | ImGuiTableFlags_BordersV
