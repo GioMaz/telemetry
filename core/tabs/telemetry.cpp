@@ -27,14 +27,12 @@ static void render_line_tooltip(
         std::vector<double> &time)
 {
     // Draw line
-    double x = ImPlot::GetPlotMousePos().x;
-    double half_width = (time[1] - time[0]) / 2;
-    double l = ImPlot::PlotToPixels(x - half_width * 1.5, 0).x;
-    double r = ImPlot::PlotToPixels(x + half_width * 1.5, 0).x;
-    double t = ImPlot::GetPlotPos().y;
-    double b = t + ImPlot::GetPlotSize().y;
-    auto color = IM_COL32(128,128,128,128);
-    ImPlot::GetPlotDrawList()->AddLine(ImVec2(l, t), ImVec2(r, b), color);
+    double x  = ImPlot::GetPlotMousePos().x;
+    double xp = ImPlot::PlotToPixels(x, 0).x;
+    double t  = ImPlot::GetPlotPos().y;
+    double b  = t + ImPlot::GetPlotSize().y;
+    auto color = IM_COL32(128,128,128,255);
+    ImPlot::GetPlotDrawList()->AddLine(ImVec2(xp, b), ImVec2(xp, t), color);
 
     // Draw tooltip
     if (x >= 0 && x < time.size() && ImGui::BeginItemTooltip()) {
@@ -153,7 +151,7 @@ static bool render_distance(
         space[i] = space[i-1] + speed[i];
     }
 
-    if (ImPlot::BeginPlot("Distance")) {
+    if (ImPlot::BeginPlot("Distance travelled")) {
         ImPlot::SetupAxes("Time", "Space");
 
         ImPlot::PlotLine("Distance",
