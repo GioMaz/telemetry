@@ -17,23 +17,29 @@ static void render_login(State *state)
 
     static char buf_email[BUF_SIZE];
     static char buf_password[BUF_SIZE];
+    static bool message = false;
 
     if (state->previous_tab != App) {
         state->previous_tab = App;
         memset(buf_email, 0, BUF_SIZE);
         memset(buf_password, 0, BUF_SIZE);
+        message = false;
     }
 
     ImGui::InputText("email", buf_email, BUF_SIZE);
     ImGui::InputText("password", buf_password, BUF_SIZE, ImGuiInputTextFlags_Password);
 
     if (ImGui::Button("Login")) {
-        state->user_login(std::string(buf_email), std::string(buf_password));
+        if (!state->user_login(std::string(buf_email), std::string(buf_password)))
+            message = true;
 
         /*// TODO: remove this*/
-        state->logged_in = true;
-        state->user = &state->users["a@gmail.com"];
+        /*state->logged_in = true;*/
+        /*state->user = &state->users["a@gmail.com"];*/
     }
+
+    if (message)
+        ImGui::Text("Email or password incorrect");
 }
 
 static void render_topbar(State *state)

@@ -63,28 +63,53 @@ static void render_all_users(State *state)
 
 void render_new_user(State *state)
 {
+
     ImGui::SeparatorText("NEW USER");
 
     static char buf_email[BUF_SIZE];
-    static char buf_password[BUF_SIZE];
+    static char buf_password1[BUF_SIZE];
+    static char buf_password2[BUF_SIZE];
     static UserRole role;
+    static int message = 0;
+
     if (state->previous_tab != Settings) {
         state->previous_tab = Settings;
         memset(buf_email, 0, BUF_SIZE);
-        memset(buf_password, 0, BUF_SIZE);
+        memset(buf_password1, 0, BUF_SIZE);
+        memset(buf_password2, 0, BUF_SIZE);
         role = Admin;
+        message = 0;
     }
 
     ImGui::InputText("email", buf_email, BUF_SIZE);
-    ImGui::InputText("password", buf_password, BUF_SIZE, ImGuiInputTextFlags_Password);
+    ImGui::InputText("password", buf_password1, BUF_SIZE, ImGuiInputTextFlags_Password);
+    ImGui::InputText("repeat password", buf_password2, BUF_SIZE, ImGuiInputTextFlags_Password);
     role_combo("Role", &role);
 
     if (ImGui::Button("Create")) {
-        auto user = User(
-                std::string(buf_email),
-                std::string(buf_password),
-                role);
-        state->user_register(user);
+        if (!buf_password1[0] && !buf_password2[1]) {
+            message = 1;
+        } else if (strcmp(buf_password1, buf_password2) == 0) {
+            auto user = User(
+                    std::string(buf_email),
+                    std::string(buf_password1),
+                    role);
+            if (state->user_register(user)) {
+                message = 2;
+            } else {
+                message = 3;
+            }
+        } else {
+            message = 4;
+        }
+    }
+
+    switch (message) {
+    case 0: break;
+    case 1: ImGui::Text("Passwords cannot be empty"); break;
+    case 2: ImGui::Text("User created correctly"); break;
+    case 3: ImGui::Text("Email already taken"); break;
+    case 4: ImGui::Text("Passwords must correspond"); break;
     }
 }
 

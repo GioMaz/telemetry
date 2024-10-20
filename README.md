@@ -35,3 +35,6 @@ When first starting the application there are 2 users registered in the system
 |-------------|---------|--------|
 | a@gmail.com | a       | Admin  |
 | v@gmail.com | v       | Viewer |
+
+- The Admin user can access all of the plots, disable plots for viewer users and create and modify existing users
+- The Viewer user can access designated plots and modify his own profile
