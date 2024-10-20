@@ -112,10 +112,8 @@ void app_render(State *state)
     ImGui::SetWindowSize(viewport->Size);
     ImGui::SetWindowPos(viewport->Pos);
 
-    if (state->logged_in)
-        render_tabs(state);
-    else
-        render_login(state);
+    if (state->logged_in) render_tabs(state);
+    else render_login(state);
 
     ImGui::End();
 }

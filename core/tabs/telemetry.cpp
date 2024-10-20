@@ -73,8 +73,7 @@ static bool render_values(
 }
 
 static bool render_path(
-        std::map<std::string, std::vector<double>> &lines,
-        bool tooltip = true)
+        std::map<std::string, std::vector<double>> &lines)
 {
     auto itx = lines.find("x");
     auto ity = lines.find("y");
@@ -96,7 +95,7 @@ static bool render_path(
                 ys.data(),
                 ys.size());
 
-        if (tooltip && ImPlot::IsPlotHovered()) {
+        if (ImPlot::IsPlotHovered()) {
 
             // Calculate cursor's closest point
             auto point  = ImPlot::GetPlotMousePos();
@@ -170,8 +169,9 @@ static bool render_distance(
 void render_telemetry(State *state)
 {
     static bool show_plots  = false;
-    static bool tooltip     = true;
+    static bool show_error  = false;
     static char buf_path[BUF_SIZE];
+    static char err_buf_path[BUF_SIZE];
     static Parser parser;
     static std::map<std::string, std::vector<double>> map;
 
@@ -180,7 +180,7 @@ void render_telemetry(State *state)
         if (state->previous_tab != Telemetry) {
             state->previous_tab = Telemetry;
             show_plots  = false;
-            tooltip     = true;
+            show_error  = false;
             strcpy(buf_path, "../csv_samples/acceleration.csv");
         }
 
@@ -188,32 +188,48 @@ void render_telemetry(State *state)
 
         if (ImGui::Button("Load CSV")) {
             // Open file
-            if (!parser.open(buf_path)) {
+            if (parser.open(buf_path)) {
+                // Read file content
+                parser.read_all();
+                map = parser.to_mapd();
+
+                show_plots = true;
+                show_error = false;
+            } else {
                 std::cerr << "Failed to open file " << buf_path << "\n";
-                return;
+                strcpy(err_buf_path, buf_path);
+                show_plots = false;
+                show_error = true;
             }
-
-            // Read all file
-            parser.read_all();
-            map = parser.to_mapd();
-
-            show_plots = true;
         }
 
-        if (show_plots) {
+        if (show_error) {
+
+            // Show error message
+            ImGui::Text("Could not open %s\n", err_buf_path);
+
+        } else if (show_plots) {
+
             // Show all the csv values based on time
-            if (state->show_values || state->user_is_admin())
-                render_values(map);
+            if (state->show_values || state->user_is_admin()) {
+                if (!render_values(map)) {
+                    ImGui::Text("Could not show values plot");
+                }
+            }
 
             // Show driver path
             if (state->show_path || state->user_is_admin()) {
-                ImGui::Checkbox("Show tooltip", &tooltip);
-                render_path(map, tooltip);
+                if (!render_path(map)) {
+                    ImGui::Text("Could not show path plot");
+                }
             }
 
             // Show distance travelled
-            if (state->show_distance || state->user_is_admin())
-                render_distance(map);
+            if (state->show_distance || state->user_is_admin()) {
+                if (!render_distance(map)) {
+                    ImGui::Text("Could not show distance plot");
+                }
+            }
         }
 
         ImGui::EndTabItem();
