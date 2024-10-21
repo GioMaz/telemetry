@@ -37,6 +37,8 @@ bool State::user_unregister(const User *user)
 
 bool State::user_login(std::string email, std::string password)
 {
+    this->clear_tabs();
+
     this->logged_in = false;
 
     auto it = this->users.find(email);
@@ -51,6 +53,8 @@ bool State::user_login(std::string email, std::string password)
 
     this->logged_in = true;
     this->user = found;
+
+    // this->clear_tabs();
 
     return true;
 }
@@ -90,4 +94,29 @@ void State::user_change_password(std::string password)
 bool State::user_is_admin()
 {
     return this->user->role == Admin;
+}
+
+void State::clear_tabs()
+{
+    // Profile tab
+    memset(this->profile_tab.buf_email, 0, BUF_SIZE);
+    memset(this->profile_tab.buf_password1, 0, BUF_SIZE);
+    memset(this->profile_tab.buf_password2, 0, BUF_SIZE);
+    this->profile_tab.message_email = 0;
+    this->profile_tab.message_password = 0;
+
+    // Settings tab
+    memset(this->settings_tab.buf_email, 0, BUF_SIZE);
+    memset(this->settings_tab.buf_password1, 0, BUF_SIZE);
+    memset(this->settings_tab.buf_password2, 0, BUF_SIZE);
+    this->settings_tab.role = Admin;
+    this->settings_tab.message = 0;
+
+    // Telemetry tab
+    this->telemetry_tab.show_plots = false;
+    this->telemetry_tab.show_error = false;
+    strcpy(this->telemetry_tab.buf_path, "../csv_samples/acceleration.csv");
+    memset(this->telemetry_tab.err_buf_path, 0, BUF_SIZE);
+    this->telemetry_tab.parser.clear();
+    this->telemetry_tab.map.clear();
 }

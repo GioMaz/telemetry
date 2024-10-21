@@ -9,6 +9,13 @@ Parser::~Parser()
     }
 }
 
+void Parser::clear()
+{
+    fclose(this->f);
+    column_names.clear();
+    rows.clear();
+}
+
 bool Parser::open(char *filename)
 {
     this->f = NULL;

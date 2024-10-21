@@ -10,15 +10,9 @@
 
 void render_new_email(State *state)
 {
-    static int  message;
-    static char buf_email[BUF_SIZE];
+    int &message = state->profile_tab.message_email;
 
-    if (state->previous_tab != Profile) {
-        // Let render_new_password() set state->previous_tab
-        // to Profile otherwise it doesn't reset the poassword
-        message = 0;
-        memset(buf_email, 0, BUF_SIZE);
-    }
+    char *buf_email = state->profile_tab.buf_email;
 
     ImGui::SeparatorText("NEW EMAIL");
     ImGui::InputText("new email", buf_email, BUF_SIZE);
@@ -44,19 +38,12 @@ void render_new_email(State *state)
 
 void render_new_password(State *state)
 {
-    static int  message;
-    static char buf_password1[BUF_SIZE];
-    static char buf_password2[BUF_SIZE];
-
-    if (state->previous_tab != Profile) {
-        state->previous_tab = Profile;
-        message = 0;
-        memset(buf_password1, 0, BUF_SIZE);
-        memset(buf_password2, 0, BUF_SIZE);
-    }
+    int &message = state->profile_tab.message_password;
 
     ImGui::SeparatorText("NEW PASSWORD");
 
+    char *buf_password1 = state->profile_tab.buf_password1;
+    char *buf_password2 = state->profile_tab.buf_password2;
 
     ImGui::InputText("new password", buf_password1, BUF_SIZE, ImGuiInputTextFlags_Password);
     ImGui::InputText("repeat new password", buf_password2, BUF_SIZE, ImGuiInputTextFlags_Password);

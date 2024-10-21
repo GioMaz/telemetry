@@ -180,21 +180,21 @@ static bool render_distance(
 
 void render_telemetry(State *state)
 {
-    static bool show_plots  = false;
-    static bool show_error  = false;
-    static char buf_path[BUF_SIZE];
-    static char err_buf_path[BUF_SIZE];
-    static Parser parser;
-    static std::map<std::string, std::vector<double>> map;
+    bool &show_plots    = state->telemetry_tab.show_plots;
+    bool &show_error    = state->telemetry_tab.show_error;
+    char *buf_path      = state->telemetry_tab.buf_path;
+    char *err_buf_path  = state->telemetry_tab.err_buf_path;
+    Parser &parser      = state->telemetry_tab.parser;
+    auto &map           = state->telemetry_tab.map;
 
     if (ImGui::BeginTabItem("Telemetry")) {
 
-        if (state->previous_tab != Telemetry) {
-            state->previous_tab = Telemetry;
-            show_plots  = false;
-            show_error  = false;
-            strcpy(buf_path, "../csv_samples/acceleration.csv");
-        }
+        /*if (state->previous_tab != Telemetry) {*/
+        /*    state->previous_tab = Telemetry;*/
+        /*    show_plots  = false;*/
+        /*    show_error  = false;*/
+        /*    strcpy(buf_path, "../csv_samples/acceleration.csv");*/
+        /*}*/
 
         ImGui::InputText("filepath", buf_path, BUF_SIZE);
 
@@ -208,7 +208,6 @@ void render_telemetry(State *state)
                 show_plots = true;
                 show_error = false;
             } else {
-                std::cerr << "Failed to open file " << buf_path << "\n";
                 strcpy(err_buf_path, buf_path);
                 show_plots = false;
                 show_error = true;
