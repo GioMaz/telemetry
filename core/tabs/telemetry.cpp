@@ -28,15 +28,23 @@ static void render_line_tooltip(
 {
     // Draw line
     double x  = ImPlot::GetPlotMousePos().x;
-    double xp = ImPlot::PlotToPixels(x, 0).x;
+    int xi = binary_search(time.data(), 0, time.size(), x);
+
+    if (xi < 0) {
+        xi = 0;
+    } else if (xi >= time.size()) {
+        xi = time.size()-1;
+    }
+
+    double xn = time[xi];
+    double xp = ImPlot::PlotToPixels(xn, 0).x;
     double t  = ImPlot::GetPlotPos().y;
     double b  = t + ImPlot::GetPlotSize().y;
     auto color = IM_COL32(128,128,128,255);
     ImPlot::GetPlotDrawList()->AddLine(ImVec2(xp, b), ImVec2(xp, t), color);
 
     // Draw tooltip
-    if (x >= 0 && x < time.size() && ImGui::BeginItemTooltip()) {
-        int xi = binary_search(time.data(), 0, time.size(), x);
+    if (ImGui::BeginItemTooltip()) {
         for (auto &line : lines) {
             ImGui::Text("%s: %lf", line.first.data(), line.second[xi]);
         }
