@@ -120,6 +120,9 @@ static bool render_throttle(
     auto ittime = lines.find("time");
     if (ittime == lines.end())
         return false;
+    auto itspeed = lines.find("speed");
+    if (itspeed == lines.end())
+        return false;
     auto itthrottle = lines.find("throttle");
     if (itthrottle == lines.end())
         return false;
@@ -128,20 +131,28 @@ static bool render_throttle(
         return false;
 
     auto &time      = ittime->second;
-    auto &brake     = itbrake->second;
+    auto &speed     = itspeed->second;
     auto &throttle  = itthrottle->second;
+    auto &brake     = itbrake->second;
 
     if (ImPlot::BeginPlot("Throttle & brake")) {
-        ImPlot::SetupAxes("Time", "Throttle");
-        ImPlot::SetupAxis(ImAxis_Y2, "Brake", ImPlotAxisFlags_AuxDefault);
+        ImPlot::SetupAxes("Time", "Speed");
+        ImPlot::SetupAxis(ImAxis_Y2, "Throttle", ImPlotAxisFlags_AuxDefault);
+        ImPlot::SetupAxis(ImAxis_Y3, "Brake", ImPlotAxisFlags_AuxDefault);
 
         ImPlot::SetAxes(ImAxis_X1, ImAxis_Y1);
+        ImPlot::PlotLine("Speed",
+                time.data(),
+                speed.data(),
+                speed.size());
+
+        ImPlot::SetAxes(ImAxis_X1, ImAxis_Y2);
         ImPlot::PlotLine("Throttle",
                 time.data(),
                 throttle.data(),
                 throttle.size());
 
-        ImPlot::SetAxes(ImAxis_X1, ImAxis_Y2);
+        ImPlot::SetAxes(ImAxis_X1, ImAxis_Y3);
         ImPlot::PlotLine("Brake",
                 time.data(),
                 brake.data(),
