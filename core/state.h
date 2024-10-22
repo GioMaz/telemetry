@@ -57,8 +57,9 @@ struct State {
     TelemetryTab telemetry_tab;
 
     // Settings
-    bool show_values    = true;
     bool show_path      = true;
+    bool show_throttle  = true;
+    bool show_position  = true;
     bool show_distance  = true;
 
     State();

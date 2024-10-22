@@ -108,9 +108,10 @@ void render_show_plots(State *state)
 {
     ImGui::SeparatorText("SHOW PLOTS");
 
-    ImGui::Checkbox("Show values plot", &state->show_values);
-    ImGui::Checkbox("Show path plot", &state->show_path);
+    ImGui::Checkbox("Show path plot",     &state->show_path);
+    ImGui::Checkbox("Show throttle plot", &state->show_throttle);
     ImGui::Checkbox("Show distance plot", &state->show_distance);
+    ImGui::Checkbox("Show position plot", &state->show_position);
 }
 
 void render_settings(State *state)

@@ -52,36 +52,6 @@ static void render_line_tooltip(
     }
 }
 
-static bool render_values(
-        std::map<std::string, std::vector<double>> &lines)
-{
-    auto it = lines.find("time");
-    if (it == lines.end())
-        return false;
-    auto &time = it->second;
-
-    if (ImPlot::BeginPlot("Values")) {
-        ImPlot::SetupAxes("Time", "Values");
-
-        for (auto &line : lines) {
-            if (line.first != "time") {
-                ImPlot::PlotLine(line.first.data(),
-                        time.data(),
-                        line.second.data(),
-                        line.second.size());
-            }
-        }
-
-        if (ImPlot::IsPlotHovered()) {
-            render_line_tooltip(lines, time);
-        }
-
-        ImPlot::EndPlot();
-    }
-
-    return true;
-}
-
 static bool render_path(
         std::map<std::string, std::vector<double>> &lines)
 {
@@ -96,11 +66,11 @@ static bool render_path(
     if (xs.size() != ys.size())
         return false;
 
-    if (ImPlot::BeginPlot("Position", ImVec2(-1, 0), ImPlotFlags_Equal)) {
+    if (ImPlot::BeginPlot("Path", ImVec2(-1, 0), ImPlotFlags_Equal)) {
         const static auto color = IM_COL32(66, 135, 245, 255);
-        ImPlot::SetupAxes("x", "y");
+        ImPlot::SetupAxes("X", "Y");
         ImPlot::PushStyleColor(ImPlotCol_Line, color);
-        ImPlot::PlotLine("Postion",
+        ImPlot::PlotLine("Path",
                 xs.data(),
                 ys.data(),
                 ys.size());
@@ -144,6 +114,49 @@ static bool render_path(
     return true;
 }
 
+static bool render_throttle(
+        std::map<std::string, std::vector<double>> &lines)
+{
+    auto ittime = lines.find("time");
+    if (ittime == lines.end())
+        return false;
+    auto itthrottle = lines.find("throttle");
+    if (itthrottle == lines.end())
+        return false;
+    auto itbrake = lines.find("brake");
+    if (itbrake == lines.end())
+        return false;
+
+    auto &time      = ittime->second;
+    auto &brake     = itbrake->second;
+    auto &throttle  = itthrottle->second;
+
+    if (ImPlot::BeginPlot("Throttle & brake")) {
+        ImPlot::SetupAxes("Time", "Throttle");
+        ImPlot::SetupAxis(ImAxis_Y2, "Brake", ImPlotAxisFlags_AuxDefault);
+
+        ImPlot::SetAxes(ImAxis_X1, ImAxis_Y1);
+        ImPlot::PlotLine("Throttle",
+                time.data(),
+                throttle.data(),
+                throttle.size());
+
+        ImPlot::SetAxes(ImAxis_X1, ImAxis_Y2);
+        ImPlot::PlotLine("Brake",
+                time.data(),
+                brake.data(),
+                brake.size());
+
+        if (ImPlot::IsPlotHovered()) {
+            render_line_tooltip(lines, time);
+        }
+
+        ImPlot::EndPlot();
+    }
+
+    return true;
+}
+
 static bool render_distance(
         std::map<std::string, std::vector<double>> &lines)
 {
@@ -160,16 +173,64 @@ static bool render_distance(
         space[i] = space[i-1] + speed[i];
     }
 
-    if (ImPlot::BeginPlot("Distance travelled")) {
-        ImPlot::SetupAxes("Time", "Space");
+    if (ImPlot::BeginPlot("Distance")) {
+        ImPlot::SetupAxes("Time", "Distance");
+        ImPlot::SetupAxis(ImAxis_Y2, "Speed", ImPlotAxisFlags_AuxDefault);
 
+        ImPlot::SetAxes(ImAxis_X1, ImAxis_Y1);
         ImPlot::PlotLine("Distance",
                 time.data(),
                 space.data(),
                 space.size());
 
+        ImPlot::SetAxes(ImAxis_X1, ImAxis_Y2);
+        ImPlot::PlotLine("Speed",
+                time.data(),
+                speed.data(),
+                speed.size());
+
         if (ImPlot::IsPlotHovered()) {
             render_line_tooltip(lines, time);
+        }
+
+        ImPlot::EndPlot();
+    }
+
+    return true;
+}
+
+static bool render_position(
+        std::map<std::string, std::vector<double>> &lines)
+{
+    auto itt = lines.find("time");
+    if (itt == lines.end())
+        return false;
+    auto itx = lines.find("x");
+    if (itx == lines.end())
+        return false;
+    auto ity = lines.find("y");
+    if (ity == lines.end())
+        return false;
+
+    auto &ts = itt->second;
+    auto &xs = itx->second;
+    auto &ys = ity->second;
+
+    if (ImPlot::BeginPlot("Position")) {
+        ImPlot::SetupAxes("Time", "Space");
+
+        ImPlot::PlotLine("X",
+                ts.data(),
+                xs.data(),
+                xs.size());
+
+        ImPlot::PlotLine("Y",
+                ts.data(),
+                ys.data(),
+                ys.size());
+
+        if (ImPlot::IsPlotHovered()) {
+            render_line_tooltip(lines, ts);
         }
 
         ImPlot::EndPlot();
@@ -188,13 +249,6 @@ void render_telemetry(State *state)
     auto &map           = state->telemetry_tab.map;
 
     if (ImGui::BeginTabItem("Telemetry")) {
-
-        /*if (state->previous_tab != Telemetry) {*/
-        /*    state->previous_tab = Telemetry;*/
-        /*    show_plots  = false;*/
-        /*    show_error  = false;*/
-        /*    strcpy(buf_path, "../csv_samples/acceleration.csv");*/
-        /*}*/
 
         ImGui::InputText("filepath", buf_path, BUF_SIZE);
 
@@ -221,26 +275,34 @@ void render_telemetry(State *state)
 
         } else if (show_plots) {
 
-            // Show all the csv values based on time
-            if (state->show_values || state->user_is_admin()) {
-                if (!render_values(map)) {
-                    ImGui::Text("Could not show values plot");
-                }
-            }
-
-            // Show driver path
-            if (state->show_path || state->user_is_admin()) {
+            // Show veichle path
+            if (state->show_path) {
                 if (!render_path(map)) {
                     ImGui::Text("Could not show path plot");
                 }
             }
 
+            // Show all the csv values based on time
+            if (state->show_throttle) {
+                if (!render_throttle (map)) {
+                    ImGui::Text("Could not show values plot");
+                }
+            }
+
             // Show distance travelled
-            if (state->show_distance || state->user_is_admin()) {
+            if (state->show_distance) {
                 if (!render_distance(map)) {
                     ImGui::Text("Could not show distance plot");
                 }
             }
+
+            // Show veichle position
+            if (state->show_position) {
+                if (!render_position(map)) {
+                    ImGui::Text("Could not show position plot");
+                }
+            }
+
         }
 
         ImGui::EndTabItem();
