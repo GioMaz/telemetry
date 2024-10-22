@@ -101,6 +101,7 @@ void State::clear_tabs()
     // Plots tab
     this->plots_tab.show_plots = false;
     this->plots_tab.show_error = false;
+    this->plots_tab.fit_next = false;
     strcpy(this->plots_tab.buf_path, "../csv_samples/acceleration.csv");
     memset(this->plots_tab.err_buf_path, 0, BUF_SIZE);
     this->plots_tab.parser.clear();

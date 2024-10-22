@@ -53,7 +53,8 @@ static void render_line_tooltip(
 }
 
 static bool render_path(
-        std::map<std::string, std::vector<double>> &lines)
+        std::map<std::string, std::vector<double>> &lines,
+        bool fit_next)
 {
     auto itx = lines.find("x");
     auto ity = lines.find("y");
@@ -65,6 +66,9 @@ static bool render_path(
 
     if (xs.size() != ys.size())
         return false;
+
+    if (fit_next)
+        ImPlot::SetNextAxesToFit();
 
     if (ImPlot::BeginPlot("Path", ImVec2(-1, 0), ImPlotFlags_Equal)) {
         const static auto color = IM_COL32(66, 135, 245, 255);
@@ -115,7 +119,8 @@ static bool render_path(
 }
 
 static bool render_throttle(
-        std::map<std::string, std::vector<double>> &lines)
+        std::map<std::string, std::vector<double>> &lines,
+        bool fit_next)
 {
     auto ittime = lines.find("time");
     if (ittime == lines.end())
@@ -134,6 +139,9 @@ static bool render_throttle(
     auto &speed     = itspeed->second;
     auto &throttle  = itthrottle->second;
     auto &brake     = itbrake->second;
+
+    if (fit_next)
+        ImPlot::SetNextAxesToFit();
 
     if (ImPlot::BeginPlot("Throttle & brake")) {
         ImPlot::SetupAxes("Time", "Speed");
@@ -169,7 +177,8 @@ static bool render_throttle(
 }
 
 static bool render_distance(
-        std::map<std::string, std::vector<double>> &lines)
+        std::map<std::string, std::vector<double>> &lines,
+        bool fit_next)
 {
     auto itt = lines.find("time");
     auto its = lines.find("speed");
@@ -183,6 +192,9 @@ static bool render_distance(
     for (int i = 1; i < space.size(); i++) {
         space[i] = space[i-1] + speed[i];
     }
+
+    if (fit_next)
+        ImPlot::SetNextAxesToFit();
 
     if (ImPlot::BeginPlot("Distance")) {
         ImPlot::SetupAxes("Time", "Distance");
@@ -211,7 +223,8 @@ static bool render_distance(
 }
 
 static bool render_position(
-        std::map<std::string, std::vector<double>> &lines)
+        std::map<std::string, std::vector<double>> &lines,
+        bool fit_next)
 {
     auto itt = lines.find("time");
     if (itt == lines.end())
@@ -226,6 +239,9 @@ static bool render_position(
     auto &ts = itt->second;
     auto &xs = itx->second;
     auto &ys = ity->second;
+
+    if (fit_next)
+        ImPlot::SetNextAxesToFit();
 
     if (ImPlot::BeginPlot("Position")) {
         ImPlot::SetupAxes("Time", "Space");
@@ -254,6 +270,7 @@ void render_plots(State *state)
 {
     bool &show_plots    = state->plots_tab.show_plots;
     bool &show_error    = state->plots_tab.show_error;
+    bool &fit_next      = state->plots_tab.fit_next;
     char *buf_path      = state->plots_tab.buf_path;
     char *err_buf_path  = state->plots_tab.err_buf_path;
     Parser &parser      = state->plots_tab.parser;
@@ -272,6 +289,7 @@ void render_plots(State *state)
 
                 show_plots = true;
                 show_error = false;
+                fit_next   = true;
             } else {
                 strcpy(err_buf_path, buf_path);
                 show_plots = false;
@@ -288,28 +306,28 @@ void render_plots(State *state)
 
             // Show veichle path
             if (state->show_path) {
-                if (!render_path(map)) {
+                if (!render_path(map, fit_next)) {
                     ImGui::Text("Could not show path plot");
                 }
             }
 
             // Show all the csv values based on time
             if (state->show_throttle) {
-                if (!render_throttle (map)) {
+                if (!render_throttle(map, fit_next)) {
                     ImGui::Text("Could not show values plot");
                 }
             }
 
             // Show distance travelled
             if (state->show_distance) {
-                if (!render_distance(map)) {
+                if (!render_distance(map, fit_next)) {
                     ImGui::Text("Could not show distance plot");
                 }
             }
 
             // Show veichle position
             if (state->show_position) {
-                if (!render_position(map)) {
+                if (!render_position(map, fit_next)) {
                     ImGui::Text("Could not show position plot");
                 }
             }
@@ -318,4 +336,7 @@ void render_plots(State *state)
 
         ImGui::EndTabItem();
     }
+
+    if (fit_next)
+        fit_next = false;
 }
