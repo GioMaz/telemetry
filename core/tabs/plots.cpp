@@ -240,6 +240,7 @@ static bool render_position(
     auto &xs = itx->second;
     auto &ys = ity->second;
 
+    // TODO: this does not work since it isn't displayed
     if (fit_next)
         ImPlot::SetNextAxesToFit();
 

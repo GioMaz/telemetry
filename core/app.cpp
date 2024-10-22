@@ -15,9 +15,9 @@ static void render_login(State *state)
 {
     ImGui::SeparatorText("USER LOGIN");
 
-    static char buf_email[BUF_SIZE];
-    static char buf_password[BUF_SIZE];
-    static bool message = false;
+    static char buf_email[BUF_SIZE]     = {0};
+    static char buf_password[BUF_SIZE]  = {0};
+    static bool message                 = false;
 
     ImGui::InputText("email", buf_email, BUF_SIZE);
     ImGui::InputText("password", buf_password, BUF_SIZE, ImGuiInputTextFlags_Password);
