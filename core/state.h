@@ -10,9 +10,19 @@
 enum Tab {
     None        = 0,
     App         = 1,
-    Profile     = 2,
-    Settings    = 3,
-    Telemetry   = 4,
+    Plots       = 2,
+    Profile     = 3,
+    Settings    = 4,
+};
+
+// Plots tab's state
+struct PlotsTab {
+    bool show_plots = false;
+    bool show_error = false;
+    char buf_path[BUF_SIZE];
+    char err_buf_path[BUF_SIZE];
+    Parser parser;
+    std::map<std::string, std::vector<double>> map;
 };
 
 // Profile tab's state
@@ -33,16 +43,6 @@ struct SettingsTab {
     int message = 0;
 };
 
-// Telemetry tab's state
-struct TelemetryTab {
-    bool show_plots = false;
-    bool show_error = false;
-    char buf_path[BUF_SIZE];
-    char err_buf_path[BUF_SIZE];
-    Parser parser;
-    std::map<std::string, std::vector<double>> map;
-};
-
 struct State {
     // Registered users
     std::unordered_map<std::string, User> users;
@@ -52,9 +52,9 @@ struct State {
     bool logged_in  = false;
 
     // Tabs state
-    ProfileTab   profile_tab;
-    SettingsTab  settings_tab;
-    TelemetryTab telemetry_tab;
+    PlotsTab    plots_tab;
+    ProfileTab  profile_tab;
+    SettingsTab settings_tab;
 
     // Settings
     bool show_path      = true;

@@ -4,4 +4,4 @@
 
 #include "../state.h"
 
-void render_telemetry(State *state);
+void render_plots(State *state);

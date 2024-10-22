@@ -239,16 +239,16 @@ static bool render_position(
     return true;
 }
 
-void render_telemetry(State *state)
+void render_plots(State *state)
 {
-    bool &show_plots    = state->telemetry_tab.show_plots;
-    bool &show_error    = state->telemetry_tab.show_error;
-    char *buf_path      = state->telemetry_tab.buf_path;
-    char *err_buf_path  = state->telemetry_tab.err_buf_path;
-    Parser &parser      = state->telemetry_tab.parser;
-    auto &map           = state->telemetry_tab.map;
+    bool &show_plots    = state->plots_tab.show_plots;
+    bool &show_error    = state->plots_tab.show_error;
+    char *buf_path      = state->plots_tab.buf_path;
+    char *err_buf_path  = state->plots_tab.err_buf_path;
+    Parser &parser      = state->plots_tab.parser;
+    auto &map           = state->plots_tab.map;
 
-    if (ImGui::BeginTabItem("Telemetry")) {
+    if (ImGui::BeginTabItem("Plots")) {
 
         ImGui::InputText("filepath", buf_path, BUF_SIZE);
 

@@ -27,9 +27,9 @@ add_library(
     ${CMAKE_CURRENT_SOURCE_DIR}/core/app.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/core/user.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/core/state.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/core/tabs/plots.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/core/tabs/profile.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/core/tabs/settings.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/core/tabs/telemetry.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/core/parser/parser.cpp
 
     # GUI

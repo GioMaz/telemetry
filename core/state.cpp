@@ -98,6 +98,14 @@ bool State::user_is_admin()
 
 void State::clear_tabs()
 {
+    // Plots tab
+    this->plots_tab.show_plots = false;
+    this->plots_tab.show_error = false;
+    strcpy(this->plots_tab.buf_path, "../csv_samples/acceleration.csv");
+    memset(this->plots_tab.err_buf_path, 0, BUF_SIZE);
+    this->plots_tab.parser.clear();
+    this->plots_tab.map.clear();
+
     // Profile tab
     memset(this->profile_tab.buf_email, 0, BUF_SIZE);
     memset(this->profile_tab.buf_password1, 0, BUF_SIZE);
@@ -111,12 +119,4 @@ void State::clear_tabs()
     memset(this->settings_tab.buf_password2, 0, BUF_SIZE);
     this->settings_tab.role = Admin;
     this->settings_tab.message = 0;
-
-    // Telemetry tab
-    this->telemetry_tab.show_plots = false;
-    this->telemetry_tab.show_error = false;
-    strcpy(this->telemetry_tab.buf_path, "../csv_samples/acceleration.csv");
-    memset(this->telemetry_tab.err_buf_path, 0, BUF_SIZE);
-    this->telemetry_tab.parser.clear();
-    this->telemetry_tab.map.clear();
 }

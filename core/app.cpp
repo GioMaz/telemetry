@@ -7,9 +7,9 @@
 #include "state.h"
 #include "common.h"
 
+#include "tabs/plots.h"
 #include "tabs/profile.h"
 #include "tabs/settings.h"
-#include "tabs/telemetry.h"
 
 static void render_login(State *state)
 {
@@ -61,20 +61,21 @@ static void render_topbar(State *state)
 
 static void render_admin_tabs(State *state)
 {
-    // Tab 0 (Telemetry)
-    render_telemetry(state);
+    // Tab 0 (Plots)
+    render_plots(state);
 
-    // Tab 1 (Profile)
+    // Tab 1 (Settings)
+    render_settings(state);
+
+    // Tab 2 (Profile)
     render_profile(state);
 
-    // Tab 2 (Settings)
-    render_settings(state);
 }
 
 static void render_viewer_tabs(State *state)
 {
-    // Tab 0 (Telemetry)
-    render_telemetry(state);
+    // Tab 0 (Plots)
+    render_plots(state);
 
     // Tab 1 (Profile)
     render_profile(state);
