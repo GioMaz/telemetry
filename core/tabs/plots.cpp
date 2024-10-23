@@ -8,18 +8,23 @@
 #include "../state.h"
 #include "../user.h"
 
-static int binary_search(double *a, int i, int j, double val)
+static int binary_search_aux(double *a, int i, int j, double val)
 {
     if (i == j) {
         return i;
     } else {
         int k = (i+j)/2;
         if (val < a[k]) {
-            return binary_search(a, i, k, val);
+            return binary_search_aux(a, i, k, val);
         } else {
-            return binary_search(a, k+1, j, val);
+            return binary_search_aux(a, k+1, j, val);
         }
     }
+}
+
+static int binary_search(std::vector<double> &a, double val)
+{
+    return binary_search_aux(a.data(), 0, a.size()-1, val);
 }
 
 static void render_line_tooltip(
@@ -28,13 +33,7 @@ static void render_line_tooltip(
 {
     // Draw line
     double x  = ImPlot::GetPlotMousePos().x;
-    int xi = binary_search(time.data(), 0, time.size(), x);
-
-    if (xi < 0) {
-        xi = 0;
-    } else if (xi >= time.size()) {
-        xi = time.size()-1;
-    }
+    int xi = binary_search(time, x);
 
     double xn = time[xi];
     double xp = ImPlot::PlotToPixels(xn, 0).x;
