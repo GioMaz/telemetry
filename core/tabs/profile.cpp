@@ -19,6 +19,7 @@ void render_new_email(State *state)
     if (ImGui::Button("Apply##email")) {
         if (buf_email[0]) {
             if (state->user_change_email(std::string(buf_email))) {
+                memset(buf_email, 0, BUF_SIZE);
                 message = 1;
             } else {
                 message = 2;

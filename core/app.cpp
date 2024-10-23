@@ -32,8 +32,8 @@ static void render_login(State *state)
         }
 
         // TODO: remove this
-        state->logged_in = true;
-        state->user = &state->users["a@gmail.com"];
+        /*state->logged_in = true;*/
+        /*state->user = &state->users["a@gmail.com"];*/
     }
 
     if (message)

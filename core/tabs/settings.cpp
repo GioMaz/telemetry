@@ -86,6 +86,10 @@ void render_new_user(State *state)
                     std::string(buf_password1),
                     role);
             if (state->user_register(user)) {
+                memset(buf_email, 0, BUF_SIZE);
+                memset(buf_password1, 0, BUF_SIZE);
+                memset(buf_password2, 0, BUF_SIZE);
+                role = Admin;
                 message = 2;
             } else {
                 message = 3;
