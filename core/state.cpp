@@ -37,8 +37,6 @@ bool State::user_unregister(const User *user)
 
 bool State::user_login(std::string email, std::string password)
 {
-    this->clear_tabs();
-
     this->logged_in = false;
 
     auto it = this->users.find(email);
@@ -54,7 +52,8 @@ bool State::user_login(std::string email, std::string password)
     this->logged_in = true;
     this->user = found;
 
-    // this->clear_tabs();
+    // Clean previous buffers before logging in
+    this->clear_tabs();
 
     return true;
 }

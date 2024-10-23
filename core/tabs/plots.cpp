@@ -314,7 +314,7 @@ void render_plots(State *state)
             // Show all the csv values based on time
             if (state->show_throttle) {
                 if (!render_throttle(map, fit_next)) {
-                    ImGui::Text("Could not show values plot");
+                    ImGui::Text("Could not show throttle plot");
                 }
             }
 
