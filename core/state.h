@@ -2,10 +2,11 @@
 
 #include <map>
 
+#include "sqlite/sqlite3.h"
+#include "parser/parser.h"
+
 #include "user.h"
 #include "common.h"
-
-#include "parser/parser.h"
 
 // Plots tab's state
 struct PlotsTab {
@@ -38,6 +39,7 @@ struct SettingsTab {
 
 struct State {
     // Registered users
+    sqlite3 *db;
     std::unordered_map<std::string, User> users;
 
     // Logged user
@@ -56,6 +58,7 @@ struct State {
     bool show_position  = true; // Show position plot
 
     State();
+    ~State();
     void populate_users();
     bool user_register(User user);
     bool user_unregister(const User *user);

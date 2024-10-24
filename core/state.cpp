@@ -1,23 +1,35 @@
 #include <iostream>
 
+#include "sqlite/sqlite3.h"
+
 #include "state.h"
 #include "user.h"
+#include "db.h"
 
 State::State()
 {
-    populate_users();
+    // Open database connection
+    char *filename = "data.sqlite";
+    int rc = sqlite3_open(filename, &this->db);
+    if (rc) {
+        std::cerr << "Could not open " << filename << "\n";
+        exit(1);
+    }
+
+    // Insert data if not exists
+    create_tables(this->db);
+    insert_admin(this->db);
+    this->users = select_users(this->db);
 }
 
-void State::populate_users()
+State::~State()
 {
-    static User users[] = {
-        { "a@gmail.com", "a", Admin },
-        { "v@gmail.com", "v", Viewer },
-    };
-    size_t size = sizeof(users)/sizeof(users[0]);
-    for (int i = 0; i < size; i++) {
-        user_register(users[i]);
-    }
+    // Save data
+    delete_users(this->db);
+    insert_users(this->db, this->users);
+
+    // Close database connection
+    sqlite3_close(this->db);
 }
 
 bool State::user_register(User user)

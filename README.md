@@ -29,12 +29,18 @@ This will build the executable that will be located in `./bin` directory.
 
 ### Usage
 
-When first starting the application there are 2 users registered in the system
+When first starting the application the admin is already registered with the credentials:
+- username: admin
+- password: admin
 
-| email       | pasword | role   |
-|-------------|---------|--------|
-| a@gmail.com | a       | Admin  |
-| v@gmail.com | v       | Viewer |
+> The admin user gets recreated on every application launch
 
-- The Admin user can access all of the plots, disable plots for viewer users and create and modify existing users
-- The Viewer user can access designated plots and modify his own profile
+The capabilities of the Admin users are:
+- Accessing all the plots
+- Disabling some plots for all users
+- Create and modify existing users
+- Modify his own profile
+
+Instead, the capabilities of the Viewer users are:
+- Accessing the designated plots
+- Modifying his own profile

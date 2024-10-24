@@ -25,6 +25,7 @@ add_library(
     SHARED
 
     # Sources
+    ${CMAKE_CURRENT_SOURCE_DIR}/core/db.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/core/app.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/core/user.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/core/state.cpp
