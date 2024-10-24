@@ -8,7 +8,7 @@
 
 bool create_tables(sqlite3 *db)
 {
-    static char *query =
+    static const char *query =
         "CREATE TABLE IF NOT EXISTS Users("
         "email VARCHAR(256) PRIMARY KEY,"
         "password VARCHAR(256),"
@@ -41,7 +41,7 @@ static int to_users(void *vusers, int argc, char **argv, char **columns)
 
 std::unordered_map<std::string, User> select_users(sqlite3 *db)
 {
-    char *query =
+    static const char *query =
         "SELECT email, password, role\n"
         "FROM Users;";
 
@@ -58,7 +58,7 @@ std::unordered_map<std::string, User> select_users(sqlite3 *db)
 
 bool delete_users(sqlite3 *db)
 {
-    char *query = "DELETE FROM Users;";
+    static const char *query = "DELETE FROM Users;";
 
     SQLITE3_EXEC(db, query);
 }
