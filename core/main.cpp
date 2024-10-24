@@ -2,6 +2,7 @@
 #include "imgui/backends/imgui_impl_opengl2.h"
 #include "imgui/imgui.h"
 #include "implot/implot.h"
+#include "sqlite/sqlite3.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>

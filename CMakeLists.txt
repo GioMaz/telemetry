@@ -15,6 +15,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty
     ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/imgui
     ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/implot
+    ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/sqlite
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
@@ -41,6 +42,9 @@ add_library(
     ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/implot/implot.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/implot/implot_items.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/implot/implot_demo.cpp
+
+    # SQLITE
+    ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/sqlite/sqlite3.c
 )
 
 target_link_libraries(${PROJECT_NAME}
