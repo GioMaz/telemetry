@@ -6,6 +6,7 @@ Parser::~Parser()
 {
     if (this->f) {
         fclose(this->f);
+        this->f = NULL;
     }
 }
 

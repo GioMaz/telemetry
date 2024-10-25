@@ -63,7 +63,7 @@ bool delete_users(sqlite3 *db)
     SQLITE3_EXEC(db, query);
 }
 
-bool insert_user(sqlite3 *db, User &user)
+static bool insert_user(sqlite3 *db, User &user)
 {
     char query[BUF_SIZE] = {0};
     sprintf(query, "INSERT INTO Users (email, password, role)\n"
