@@ -39,8 +39,8 @@ struct SettingsTab {
 
 struct State {
     // Registered users
-    sqlite3 *db;
     std::unordered_map<std::string, User> users;
+    sqlite3 *db;
 
     // Logged user
     User *user      = NULL;
