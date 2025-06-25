@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 
 #include "sqlite/sqlite3.h"
 
@@ -113,7 +114,7 @@ void State::clear_tabs()
     this->plots_tab.show_plots = false;
     this->plots_tab.show_error = false;
     this->plots_tab.fit_next = false;
-    strcpy(this->plots_tab.buf_path, "../csv_samples/acceleration.csv");
+    strcpy(this->plots_tab.buf_path, "csv_samples/acceleration.csv");
     memset(this->plots_tab.err_buf_path, 0, BUF_SIZE);
     this->plots_tab.parser.clear();
     this->plots_tab.map.clear();

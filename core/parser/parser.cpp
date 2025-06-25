@@ -12,7 +12,9 @@ Parser::~Parser()
 
 void Parser::clear()
 {
-    fclose(this->f);
+    if (this->f) {
+        fclose(this->f);
+    }
     column_names.clear();
     rows.clear();
 }

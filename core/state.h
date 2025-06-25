@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <unordered_map>
 
 #include "sqlite/sqlite3.h"
 #include "parser/parser.h"
